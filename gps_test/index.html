@@ -11,7 +11,7 @@
 <script>
 if( navigator.geolocation ){// 現在位置を取得できる場合の処理
 // 現在位置を取得する
-navigator.geolocation.getCurrentPosition( success, error, option);
+navigator.geolocation.watchPosition(success[, error[, options]]);
 /*現在位置が取得できた時に実行*/
 function success(position){
 var data = position.coords;
