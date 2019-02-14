@@ -7,11 +7,12 @@
             src="https://code.jquery.com/jquery-3.3.1.js"
             integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
             crossorigin="anonymous"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8VAwrhMZoJAdFbQW5WWD-BCLvT-sGzgU"></script>
 
 <script>
 if( navigator.geolocation ){// 現在位置を取得できる場合の処理
 // 現在位置を取得する
-navigator.geolocation.watchPosition(success[, error[, options]]);
+navigator.geolocation.getCurrentPosition( success, error, option);
 /*現在位置が取得できた時に実行*/
 function success(position){
 var data = position.coords;
@@ -52,7 +53,6 @@ var option = {
 alert("あなたの端末では、現在位置を取得できません。");
 }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8VAwrhMZoJAdFbQW5WWD-BCLvT-sGzgU"></script>
     </head>
     <body>
 
