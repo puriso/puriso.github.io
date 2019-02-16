@@ -1,5 +1,7 @@
 var map = undefined;
 var gps_data = [];
+var polyline;
+var center_marker;
 
 $(function(){
   if( !navigator.geolocation ){
@@ -19,25 +21,15 @@ function success(position){
     mapTypeId: 'roadmap',   //地図の種類
     center: new google.maps.LatLng(lat, lng),
   };
-  //makeMarker(map);
+  makeCenerMarker(map, lat, lng);
   if(map === undefined){
     map = new google.maps.Map(document.getElementById('map'), Options);
     console.log("Created google map");
   }
   var last = gps_data.length-1;
 
-  if(gps_data.length < 5){
-    gps_data.push(new google.maps.LatLng(lat, lng));
-    map.panTo(new google.maps.LatLng(lat, lng));
-  } else if(
-    (gps_data[last].lat() - lat) > lat_m(3)
-    && (gps_data[last].lng() - lng) > lng_m(3)
-    && (gps_data[last].lat() + lat) > gps_data[last].lng() +lat_m(3)
-    && (gps_data[last].lng() + lng) > gps_data[last].lng() + lng_m(3)
-  ){
-    gps_data.push(new google.maps.LatLng(lat, lng));
-    map.panTo(new google.maps.LatLng(lat, lng));
-  }
+  gps_data.push(new google.maps.LatLng(lat, lng));
+  map.panTo(new google.maps.LatLng(lat, lng));
 
   if(gps_data.length > 2) {
     makeLine(map);
@@ -45,30 +37,37 @@ function success(position){
 }
 
 
-function makeMarker(map){
-  new google.maps.Marker({
+function makeCenerMarker(map, lat, lng){
+  console.log("Created marker");
+  if(center_marker !== undefined){
+    center_marker.setMap(null);
+  }
+  center_marker = new google.maps.Marker({
     position: new google.maps.LatLng(lat, lng),
     map: map,
     draggable : true,
     icon: {
-      fillColor: "#87cefa",                //塗り潰し色
+      fillColor: "#0066CC",                //塗り潰し色
       fillOpacity: 0.8,                    //塗り潰し透過率
       path: google.maps.SymbolPath.CIRCLE, //円を指定
-      scale: 3,                           //円のサイズ
-      strokeColor: "#87cefa",              //枠の色
-      strokeWeight: 1.0                    //枠の透過率
+      scale: 8,                           //円のサイズ
+      strokeColor: "#0066CC",              //枠の色
+      strokeWeight: 0.8                   //枠の透過率
     },
   });
 }
 function makeLine(map){
-  gps_data2 = [];
-  var path = new google.maps.Polyline({
+  console.log("Created line");
+  if (gps_data.length % 10 === 0){
+    polyline.setMap(null);
+  }
+  polyline = new google.maps.Polyline({
     path: gps_data,
     strokeColor: "#87cefa",
     strokeOpacity: .8,
     strokeWeight: 8
   });
-  path.setMap(map)
+  polyline.setMap(map)
 }
 
 function makeRoute(map){
