@@ -26,13 +26,22 @@ function success(position){
   }
   var last = gps_data.length-1;
 
-  gps_data.push( new google.maps.LatLng(lat, lng) );
-  map.panTo(new google.maps.LatLng(lat, lng))
+  if(gps_data.length < 5){
+    gps_data.push(new google.maps.LatLng(lat, lng));
+    map.panTo(new google.maps.LatLng(lat, lng));
+  } else if(
+    (gps_data[last].lat() - lat) > lat_m(3)
+    && (gps_data[last].lng() - lng) > lng_m(3)
+    && (gps_data[last].lat() + lat) > gps_data[last].lng() +lat_m(3)
+    && (gps_data[last].lng() + lng) > gps_data[last].lng() + lng_m(3)
+  ){
+    gps_data.push(new google.maps.LatLng(lat, lng));
+    map.panTo(new google.maps.LatLng(lat, lng));
+  }
 
   if(gps_data.length > 2) {
     makeLine(map);
   }
-  console.log(gps_data[last+1]);
 }
 
 
@@ -52,7 +61,7 @@ function makeMarker(map){
   });
 }
 function makeLine(map){
-  console.log("Created line");
+  gps_data2 = [];
   var path = new google.maps.Polyline({
     path: gps_data,
     strokeColor: "#87cefa",
@@ -85,6 +94,14 @@ function makeRoute(map){
       r.setDirections(result);
     }
   });
+}
+
+function lat_m(n){
+  return 0.000008983148616 * n
+}
+
+function lng_m(n){
+  return 0.000010966382364 * n
 }
 
 function rr(){
