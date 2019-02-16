@@ -19,10 +19,24 @@ function success(position){
     mapTypeId: 'roadmap',   //地図の種類
     center: new google.maps.LatLng(lat, lng),
   };
+  //makeMarker(map);
   if(map === undefined){
     map = new google.maps.Map(document.getElementById('map'), Options);
     console.log("Created google map");
   }
+  var last = gps_data.length-1;
+
+  gps_data.push( new google.maps.LatLng(lat, lng) );
+  map.panTo(new google.maps.LatLng(lat, lng))
+
+  if(gps_data.length > 2) {
+    makeLine(map);
+  }
+  console.log(gps_data[last+1]);
+}
+
+
+function makeMarker(map){
   new google.maps.Marker({
     position: new google.maps.LatLng(lat, lng),
     map: map,
@@ -36,13 +50,16 @@ function success(position){
       strokeWeight: 1.0                    //枠の透過率
     },
   });
-  var last = gps_data.length-1;
-
-  gps_data.push( { location: new google.maps.LatLng(lat, lng) });
-  if(gps_data.length > 3) {
-    makeRoute(map);
-  }
-  console.log(gps_data[last+1]);
+}
+function makeLine(map){
+  console.log("Created line");
+  var path = new google.maps.Polyline({
+    path: gps_data,
+    strokeColor: "#87cefa",
+    strokeOpacity: .8,
+    strokeWeight: 8
+  });
+  path.setMap(map)
 }
 
 function makeRoute(map){
@@ -103,7 +120,7 @@ function error(error){
 
 // オプション(省略可)
 var option = {
-  "enableHighAccuracy": true,
-  "timeout": 100 ,
+  "enableHighAccuracy": false,
+  "timeout": 1500 ,
   "maximumAge": 100 ,
 } ;
