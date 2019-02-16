@@ -15,7 +15,7 @@ function error(error){
   //とりあえずalert
   alert( errorMessage[error.code]);
 }
-
+$(function(){
 // オプション(省略可)
 var option = {
 "enableHighAccuracy": false,
@@ -30,3 +30,4 @@ var Options = {
   mapTypeId: 'roadmap'   //地図の種類
 };
 var map = new google.maps.Map(document.getElementById('map'), Options);
+}
