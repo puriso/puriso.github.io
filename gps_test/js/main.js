@@ -2,15 +2,39 @@ var map = undefined;
 var gps_data = [];
 var polyline;
 var center_marker;
+var start = false;
+var gps_id;
+var markers = [];
+var km = 0;
 
 $(function(){
   if( !navigator.geolocation ){
     alert("GPS非対応");
     return;
   }
-  navigator.geolocation.watchPosition( success, error, option);
-});
 
+  $('.btnBox__btn').on('click',function(){
+    if(start === false){
+      start = true;
+      $('.blackBg').hide();
+      $('.btnBox__btn').addClass("btnBox__btn--stop").text("STOP");
+      $('.btnBox__btn').parent().addClass("btnBox--stop");
+      gps_data = [];
+      gps_id = navigator.geolocation.watchPosition( success, error, option);
+    }else{
+      start = false;
+      navigator.geolocation.clearWatch(gps_id);
+      var last = gps_data.length-1;
+      lat = gps_data[last].lat();
+      lng = gps_data[last].lng();
+      makeFlagMarker(map, lat, lng, "red");
+      var markerBounds = new google.maps.LatLngBounds();
+      $('.btnBox__btn').removeClass("btnBox__btn--stop").text("START");
+      $('.btnBox__btn').parent().removeClass("btnBox--stop");
+      fitMap();
+    }
+  });
+});
 function success(position){
   var coords = position.coords;
   var lat = coords.latitude;
@@ -24,15 +48,18 @@ function success(position){
   if(map === undefined){
     map = new google.maps.Map(document.getElementById('map'), Options);
     console.log("Created google map");
+    makeFlagMarker(map, lat, lng, "yellow")
   }
   makeCenerMarker(map, lat, lng);
 
-  var last = gps_data.length-1;
   gps_data.push(new google.maps.LatLng(lat, lng));
   map.panTo(new google.maps.LatLng(lat, lng));
 
   if(gps_data.length > 2) {
     makeLine(map);
+    var last = gps_data.length-1;
+    //km += Math.abs( Math.abs( gps_data[last-1]) - Math.abs(gps_data[last]) ) / 1000;
+    //$(".kmBox").show().text(km + " km");
   }
 }
 
@@ -50,12 +77,28 @@ function makeCenerMarker(map, lat, lng){
       fillColor: "#0066CC",                //塗り潰し色
       fillOpacity: 0.8,                    //塗り潰し透過率
       path: google.maps.SymbolPath.CIRCLE, //円を指定
-      scale: 8,                           //円のサイズ
-      strokeColor: "#0066CC",              //枠の色
-      strokeWeight: 0.8                   //枠の透過率
+      scale: 16,                           //円のサイズ
+      strokeColor: "white",              //枠の色
+      strokeWeight: 1.0                 //枠の透過率
     },
   });
 }
+
+function makeFlagMarker(map, lat, lng, color="yellow"){
+  console.log("Created flag");
+  var image ={
+    url : '/images/'+ color + '_flag.png',
+    scaledSize : new google.maps.Size(32, 32)
+  }
+  markers.push(new google.maps.Marker({
+    position: new google.maps.LatLng(lat, lng),
+    map: map,
+    draggable : true,
+    icon: image,
+    scaledSize : new google.maps.Size(16, 16)
+  }));
+}
+
 function makeLine(map){
   console.log("Created line");
   if (gps_data.length % 10 === 0){
@@ -65,7 +108,7 @@ function makeLine(map){
     path: gps_data,
     strokeColor: "#87cefa",
     strokeOpacity: .8,
-    strokeWeight: 8
+    strokeWeight: 16
   });
   polyline.setMap(map)
 }
@@ -93,6 +136,25 @@ function makeRoute(map){
       r.setDirections(result);
     }
   });
+}
+
+function fitMap(){
+  var minX = gps_data[0].lng();
+  var minY = gps_data[0].lat();
+  var maxX = gps_data[0].lng();;
+  var maxY = gps_data[0].lat();;
+  for(var i=0; i<gps_data.length; ++i){
+    var lt = gps_data[i].lat();
+    var lg = gps_data[i].lng();
+    if (lg <= minX){ minX = lg; }
+    if (lg > maxX){ maxX = lg; }
+    if (lt <= minY){ minY = lt; }
+    if (lt > maxY){ maxY = lt; }
+  }
+  var sw = new google.maps.LatLng(maxY, minX);
+  var ne = new google.maps.LatLng(minY, maxX);
+  var bounds = new google.maps.LatLngBounds(sw, ne);
+  map.fitBounds(bounds);
 }
 
 function lat_m(n){

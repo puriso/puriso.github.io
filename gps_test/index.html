@@ -8,17 +8,72 @@
     <script src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/normalize.css">
     <style>
+body{
+}
+.blackBg{
+  background: #000;
+  height: 100vh;
+  width:100%;
+  z-index:3;
+  opacity: 0.3;
+  position: absolute;
+}
 #container{
+  position: relative;
+  height: 100vh;
+  background: url(/images/bg.png);
 }
 #map{
   width: 100%;
-  height: 100%;
+  height: 100vh;
   position: absolute;
+}
+.btnBox{
+  position: absolute;
+  /* margin: 50vh 50vw; */
+  z-index: 99;
+  text-align: center;
+  bottom: 25%;
+  width: 100%;
+}
+.btnBox__btn{
+  display: inline-block;
+  padding: 24px 80px;
+  background: #333333;
+  color: #FFF;
+  font-weight: 800;
+  font-family: Tahoma;
+  font-size: 32px;
+  animation: animeSample 1s ease .5s
+}
+
+.btnBox--stop{
+  bottom:24px;
+  text-align:left;
+    margin-left:16px;
+}
+.btnBox__btn--stop{
+  background: #F26964;
+}
+.kmBox{
+  position: absolute;
+  /* margin: 50vh 50vw; */
+  z-index: 99;
+  text-align: center;
+  bottom: 10%;
+  width: 100%;
 }
     </style>
   </head>
   <body>
+    <div class="blackBg"></div>
     <div id="container">
+      <div class="kmBox" style="display:none;"> ??? km </div>
+      <div class="btnBox">
+        <div class="btnBox__btn" >
+          START
+        </div>
+      </div>
       <div id="map" style="width:100%;height:100%;"></div>
     </div>
   </body>
