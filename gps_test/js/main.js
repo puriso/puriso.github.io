@@ -1,10 +1,41 @@
-if( navigator.geolocation ){// 現在位置を取得できる場合の処理
-  navigator.geolocation.getCurrentPosition( success, error, option);
-}
-function success(position){
+var map = undefined;
+var gps_data = [];
 
+$(function(){
+  if( !navigator.geolocation ){
+    alert("GPS非対応");
+    return;
+  }
+   navigator.geolocation.watchPosition( success, error, option);
+});
+
+function success(position){
+  var coords = position.coords;
+  var lat = coords.latitude;
+  var lng = coords.longitude;
+
+  var Options = {
+    zoom: 14,      //地図の縮尺値
+    mapTypeId: 'roadmap',   //地図の種類
+    center: new google.maps.LatLng(lat, lng),
+  };
+  if(map === undefined){
+    map = new google.maps.Map(document.getElementById('map'), Options);
+    console.log("Created google map");
+  }
+  new google.maps.Marker({
+    position: new google.maps.LatLng(lat, lng),
+    map: map,
+    draggable : true
+  });
+  var last = gps_data.length-1;
+
+  if (gps_data[last] === undefined || gps_data[last][0] !== lat && gps_data[last][1] !== lng ){
+    gps_data.push([lat, lng, new Date()]);
+    console.log(gps_data[last+1]);
+  }
 }
-/*現在位置の取得に失敗した時に実行*/
+
 function error(error){
   var errorMessage = {
     0: "原因不明のエラーが発生しました。",
@@ -12,22 +43,12 @@ function error(error){
     2: "位置情報が取得できませんでした。",
     3: "タイムアウトしました。",
   } ;
-  //とりあえずalert
   alert( errorMessage[error.code]);
 }
-$(function(){
+
 // オプション(省略可)
 var option = {
-"enableHighAccuracy": false,
-"timeout": 100 ,
-"maximumAge": 100 ,
+  "enableHighAccuracy": true,
+  "timeout": 100 ,
+  "maximumAge": 100 ,
 } ;
-
-var MyLatLng = new google.maps.LatLng(35.6811673, 139.7670516);
-var Options = {
-  zoom: 15,      //地図の縮尺値
-  center: MyLatLng,    //地図の中心座標
-  mapTypeId: 'roadmap'   //地図の種類
-};
-var map = new google.maps.Map(document.getElementById('map'), Options);
-}
