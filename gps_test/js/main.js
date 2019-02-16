@@ -53,6 +53,8 @@ function success(position){
     console.log("Created google map");
   }
   if(gps_data.length === 0){
+
+    map.setZoom(18);
     makeFlagMarker(map, lat, lng, "yellow")
   }
   makeCenerMarker(map, lat, lng);
