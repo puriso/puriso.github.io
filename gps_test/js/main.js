@@ -20,6 +20,8 @@ $(function(){
       $('.btnBox__btn').addClass("btnBox__btn--stop").text("STOP");
       $('.btnBox__btn').parent().addClass("btnBox--stop");
       gps_data = [];
+      markers = [];
+      km = 0;
       gps_id = navigator.geolocation.watchPosition( success, error, option);
     }else{
       start = false;
