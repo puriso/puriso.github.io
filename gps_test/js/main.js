@@ -21,13 +21,13 @@ function success(position){
     mapTypeId: 'roadmap',   //地図の種類
     center: new google.maps.LatLng(lat, lng),
   };
-  makeCenerMarker(map, lat, lng);
   if(map === undefined){
     map = new google.maps.Map(document.getElementById('map'), Options);
     console.log("Created google map");
   }
-  var last = gps_data.length-1;
+  makeCenerMarker(map, lat, lng);
 
+  var last = gps_data.length-1;
   gps_data.push(new google.maps.LatLng(lat, lng));
   map.panTo(new google.maps.LatLng(lat, lng));
 
