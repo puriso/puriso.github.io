@@ -16,11 +16,12 @@ $(function(){
   $('.btnBox__btn').on('click',function(){
     if(start === false){
       start = true;
+      markers = [];
+      clearMarkers();
       $('.blackBg').hide();
       $('.btnBox__btn').addClass("btnBox__btn--stop").text("STOP");
       $('.btnBox__btn').parent().addClass("btnBox--stop");
       gps_data = [];
-      markers = [];
       km = 0;
       gps_id = navigator.geolocation.watchPosition( success, error, option);
     }else{
@@ -50,6 +51,8 @@ function success(position){
   if(map === undefined){
     map = new google.maps.Map(document.getElementById('map'), Options);
     console.log("Created google map");
+  }
+  if(gps_data.length === 0){
     makeFlagMarker(map, lat, lng, "yellow")
   }
   makeCenerMarker(map, lat, lng);
@@ -167,23 +170,16 @@ function lng_m(n){
   return 0.000010966382364 * n
 }
 
-function rr(){
-  var request = {
-    origin: new google.maps.LatLng(35.681382,139.766084), // 出発地
-    destination: new google.maps.LatLng(34.73348,135.500109), // 目的地
-    waypoints: [ // 経由地点(指定なしでも可)
-      { location: new google.maps.LatLng(35.630152,139.74044) },
-      { location: new google.maps.LatLng(35.507456,139.617585) },
-      { location: new google.maps.LatLng(35.25642,139.154904) },
-      { location: new google.maps.LatLng(35.103217,139.07776) },
-      { location: new google.maps.LatLng(35.127152,138.910627) },
-      { location: new google.maps.LatLng(35.142365,138.663199) },
-      { location: new google.maps.LatLng(34.97171,138.38884) },
-      { location: new google.maps.LatLng(34.769758,138.014928) },
-    ],
-    travelMode: google.maps.DirectionsTravelMode.WALKING, // 交通手段(歩行。DRIVINGの場合は車)
-  };
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
 
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setMapOnAll(null);
 }
 
 
