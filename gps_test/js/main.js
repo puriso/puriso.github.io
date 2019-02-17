@@ -16,7 +16,6 @@ $(function(){
   $('.btnBox__btn').on('click',function(){
     if(start === false){
       start = true;
-      markers = [];
       clearMarkers();
       $('.blackBg').hide();
       $('.btnBox__btn').addClass("btnBox__btn--stop").text("STOP");
@@ -79,7 +78,6 @@ function makeCenerMarker(map, lat, lng){
   center_marker = new google.maps.Marker({
     position: new google.maps.LatLng(lat, lng),
     map: map,
-    draggable : true,
     icon: {
       fillColor: "#0066CC",                //塗り潰し色
       fillOpacity: 0.8,                    //塗り潰し透過率
@@ -94,8 +92,8 @@ function makeCenerMarker(map, lat, lng){
 function makeFlagMarker(map, lat, lng, color="yellow"){
   console.log("Created flag");
   var image ={
-    url : '/images/'+ color + '_flag.png',
-    scaledSize : new google.maps.Size(32, 32)
+    url : './images/'+ color + '_flag.png',
+    scaledSize : new google.maps.Size(40, 40)
   }
   markers.push(new google.maps.Marker({
     position: new google.maps.LatLng(lat, lng),
@@ -182,6 +180,7 @@ function setMapOnAll(map) {
 // Removes the markers from the map, but keeps them in the array.
 function clearMarkers() {
   setMapOnAll(null);
+  markers = [];
 }
 
 
