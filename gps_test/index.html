@@ -44,19 +44,36 @@ html, body{
   background: #333333;
   color: #FFF;
   font-weight: 800;
-  font-family: Tahoma;
   font-size: 32px;
-  animation: animeSample 1s ease .5s
 }
 
 .btnBox--stop{
   bottom:24px;
   text-align:left;
-    margin-left:16px;
+  margin-left:16px;
 }
-.btnBox__btn--stop{
-  background: #F26964;
+.flashMessage{
+  display:none;
+  position: absolute;
+  z-index: 99;
+  text-align: center;
+  width: 100%;
+  animation: flashMessageAnime 1s linear 0s;
+  top:34px;
 }
+@keyframes flashMessageAnime{
+  0%{ top: -100%; }
+  100%{ top: 24px; }
+}
+.flashMessage__text{
+  display: inline-block;
+  padding: 12px 16px;
+  background: #1253A4;
+  color: #FFF;
+  font-size: 14px;
+  min-width: 240px;
+}
+
 .kmBox{
   position: absolute;
   z-index: 99;
@@ -70,6 +87,9 @@ html, body{
     <div class="blackBg"></div>
     <div id="container">
       <div class="kmBox" style="display:none;"> ??? km </div>
+
+      <div class="flashMessage"> <div class="flashMessage__text"> FLASH MESSAGE </div>
+      </div>
       <div class="btnBox">
         <div class="btnBox__btn" >
           START

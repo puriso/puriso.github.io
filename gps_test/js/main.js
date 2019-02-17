@@ -8,6 +8,7 @@ var markers = [];
 var km = 0;
 
 $(function(){
+  flashMessage("Welcome! Version 0.1b");
   if( !navigator.geolocation ){
     alert("GPS非対応");
     return;
@@ -15,6 +16,7 @@ $(function(){
 
   $('.btnBox__btn').on('click',function(){
     if(start === false){
+      flashMessage("Start logging!");
       start = true;
       clearMarkers();
       $('.blackBg').hide();
@@ -24,6 +26,7 @@ $(function(){
       km = 0;
       gps_id = navigator.geolocation.watchPosition( success, error, option);
     }else{
+      flashMessage("Stop logging.");
       start = false;
       navigator.geolocation.clearWatch(gps_id);
       var last = gps_data.length-1;
@@ -46,6 +49,10 @@ function success(position){
     zoom: 18,      //地図の縮尺値
     mapTypeId: 'roadmap',   //地図の種類
     center: new google.maps.LatLng(lat, lng),
+    mapTypeControl: false, //マップタイプ コントロール
+    fullscreenControl: false, //全画面表示コントロール
+    streetViewControl: false, //ストリートビュー コントロール
+    zoomControl: false, //ズーム コントロール
   };
   if(map === undefined){
     map = new google.maps.Map(document.getElementById('map'), Options);
@@ -183,6 +190,14 @@ function clearMarkers() {
   markers = [];
 }
 
+function flashMessage(m){
+  $(".flashMessage").hide();
+  $(".flashMessage__text").text(m);
+  $(".flashMessage").show();
+  setTimeout(function(){
+    $(".flashMessage").fadeOut("slow");
+  },3000);
+}
 
 
 function error(error){
@@ -198,6 +213,6 @@ function error(error){
 // オプション(省略可)
 var option = {
   "enableHighAccuracy": false,
-  "timeout": 1500 ,
+  "timeout": 3500 ,
   "maximumAge": 100 ,
 } ;
