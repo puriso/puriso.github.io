@@ -38,17 +38,25 @@ html, body{
 
 .btnBox--stop{
     bottom:24px;
-    text-align:left;
     margin-left:16px;
+    text-align: center;
+}
+#flashMessages{
+  top:34px;
+  position: absolute;
+  width: 100%;
+  z-index: 99;
 }
 .flashMessage{
     display:none;
-    position: absolute;
-    z-index: 99;
     text-align: center;
     width: 100%;
-    animation: flashMessageAnime 1s linear 0s;
-    top:34px;
+    margin-bottom: 16px;
+    /*animation: flashMessageAnime 1s linear 0s;*/
+    /* top:34px; */
+    position:relative;
+    top:0;
+    left:0;
 }
 @keyframes flashMessageAnime{
     0%{ top: -100%; }

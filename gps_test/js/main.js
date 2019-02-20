@@ -1,11 +1,13 @@
 var map = undefined;
 var gps_data = [];
-var polyline;
+var polylines = [];
 var center_marker;
 var start = false;
 var gps_id;
 var markers = [];
 var km = 0;
+var flash_message = false;
+var start_count = 0;
 
 $(function(){
   flashMessage("Welcome! Version 0.1b");
@@ -16,10 +18,11 @@ $(function(){
 
   $('.btnBox__btn').on('click',function(){
     if(start === false){
-      flashMessage("Start logging!");
       start = true;
-      clearMarkers();
-      $('.blackBg').hide();
+      start_count += 1;
+      flashMessage("Start logging!");
+      if(start_count === 1) init();
+      if(start_count > 1) secondInit();
       $('.btnBox__btn').addClass("btnBox__btn--stop").text("STOP");
       $('.btnBox__btn').parent().addClass("btnBox--stop");
       gps_data = [];
@@ -29,17 +32,30 @@ $(function(){
       flashMessage("Stop logging.");
       start = false;
       navigator.geolocation.clearWatch(gps_id);
-      var last = gps_data.length-1;
-      lat = gps_data[last].lat();
-      lng = gps_data[last].lng();
-      makeFlagMarker(map, lat, lng, "red");
-      var markerBounds = new google.maps.LatLngBounds();
+      if(gps_data.length > 0){
+        var last = gps_data.length-1;
+        lat = gps_data[last].lat();
+        lng = gps_data[last].lng();
+        makeFlagMarker(map, lat, lng, "red");
+        var markerBounds = new google.maps.LatLngBounds();
+      }
       $('.btnBox__btn').removeClass("btnBox__btn--stop").text("START");
       $('.btnBox__btn').parent().removeClass("btnBox--stop");
       fitMap();
     }
   });
 });
+
+function init(){
+  $('.blackBg').remove();
+}
+
+function secondInit(){
+  console.log("start count = " + start_count);
+  clearMarkers();
+  clearPolylines();
+}
+
 function success(position){
   var coords = position.coords;
   var lat = coords.latitude;
@@ -59,7 +75,6 @@ function success(position){
     console.log("Created google map");
   }
   if(gps_data.length === 0){
-
     map.setZoom(18);
     makeFlagMarker(map, lat, lng, "yellow")
   }
@@ -114,16 +129,17 @@ function makeFlagMarker(map, lat, lng, color="yellow"){
 function makeLine(map){
   console.log("Created line");
   if (gps_data.length % 10 === 0){
-    polyline.setMap(null);
+    polylines.setMap(null);
   }
-  polyline = new google.maps.Polyline({
+  polylines = new google.maps.Polyline({
     path: gps_data,
     strokeColor: "#87cefa",
     strokeOpacity: .8,
     strokeWeight: 16
   });
-  polyline.setMap(map)
+  polylines.setMap(map)
 }
+
 
 function makeRoute(map){
   console.log("Created route");
@@ -187,15 +203,30 @@ function setMapOnAll(map) {
 // Removes the markers from the map, but keeps them in the array.
 function clearMarkers() {
   setMapOnAll(null);
-  markers = [];
+}
+
+function setMapOnAllPolylines(map) {
+  for (var i = 0; i < polylines.length; i++) {
+    polylines[i].setMap(map);
+  }
+}
+
+function clearPolylines() {
+  setMapOnAllPolylines(null);
 }
 
 function flashMessage(m){
-  $(".flashMessage").hide();
-  $(".flashMessage__text").text(m);
-  $(".flashMessage").show();
+  var date = new Date();
+  var class_name = "flashMessage--" + date.getMinutes() + date.getSeconds();
+  var element =  "." + class_name;
+
+  $("#flashMessages").append('<div class="flashMessage ' + class_name + '"><div class="flashMessage__text"></div>');
+  $(element).fadeIn("slow");
+  $(element + " .flashMessage__text").text(m);
   setTimeout(function(){
-    $(".flashMessage").fadeOut("slow");
+    $(element + " .flashMessage__text").fadeOut("slow",function(){
+      $(element).remove();
+    })
   },3000);
 }
 
