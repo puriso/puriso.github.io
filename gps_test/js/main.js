@@ -157,6 +157,7 @@ function makeRoute(map){
 }
 
 function fitMap(){
+  if (gps_data.length === 0) return;
   var minX = gps_data[0].lng();
   var minY = gps_data[0].lat();
   var maxX = gps_data[0].lng();;
