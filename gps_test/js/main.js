@@ -94,8 +94,7 @@ function success(position){
     var last = gps_data.length-1;
     // 小数点第2位以下を切り捨て(km)
     distabce = Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10) / 10000
-
-    $(".kmBox").text("走行距離: 約" + distabce + "km");
+    if(distabce > 0) $(".kmBox").text("走行距離: 約" + distabce + "km");
   }
 }
 
@@ -248,7 +247,7 @@ function error(error){
     2: "位置情報が取得できませんでした。",
     3: "タイムアウトしました。",
   } ;
-  $(".gpsBox").html('<i class="fas fa-exclamation-triangle faa-flash animated"></i> ' + errorMessage).addClass("error");
+  $(".gpsBox").html('<i class="fas fa-exclamation-triangle faa-flash animated"></i> ' + errorMessage[error.code]).addClass("error");
 }
 
 // オプション(省略可)
