@@ -18,11 +18,12 @@ $(function(){
 
   $('.btnBox__btn').on('click',function(){
     if(start === false){
+      $('.blackBg').remove();
       start = true;
       start_count += 1;
       flashMessage("Start logging!");
-      if(start_count === 1) init();
-      if(start_count > 1) secondInit();
+      clearMarkers();
+      clearPolylines();
       $('.btnBox__btn').addClass("btnBox__btn--stop").text("STOP");
       $('.btnBox__btn').parent().addClass("btnBox--stop");
       gps_data = [];
@@ -45,16 +46,6 @@ $(function(){
     }
   });
 });
-
-function init(){
-  $('.blackBg').remove();
-}
-
-function secondInit(){
-  console.log("start count = " + start_count);
-  clearMarkers();
-  clearPolylines();
-}
 
 function success(position){
   var coords = position.coords;
@@ -120,7 +111,6 @@ function makeFlagMarker(map, lat, lng, color="yellow"){
   markers.push(new google.maps.Marker({
     position: new google.maps.LatLng(lat, lng),
     map: map,
-    draggable : true,
     icon: image,
     scaledSize : new google.maps.Size(16, 16)
   }));
@@ -129,15 +119,15 @@ function makeFlagMarker(map, lat, lng, color="yellow"){
 function makeLine(map){
   console.log("Created line");
   if (gps_data.length % 10 === 0){
-    polylines.setMap(null);
+    clearPolylines();
   }
-  polylines = new google.maps.Polyline({
+  polylines.push(new google.maps.Polyline({
+    map: map,
     path: gps_data,
     strokeColor: "#87cefa",
     strokeOpacity: .8,
     strokeWeight: 16
-  });
-  polylines.setMap(map)
+  }));
 }
 
 
@@ -203,6 +193,7 @@ function setMapOnAll(map) {
 // Removes the markers from the map, but keeps them in the array.
 function clearMarkers() {
   setMapOnAll(null);
+  markers = [];
 }
 
 function setMapOnAllPolylines(map) {
@@ -213,6 +204,7 @@ function setMapOnAllPolylines(map) {
 
 function clearPolylines() {
   setMapOnAllPolylines(null);
+  polylines = [];
 }
 
 function flashMessage(m){
