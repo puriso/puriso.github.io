@@ -92,9 +92,8 @@ function success(position){
      */
     var last = gps_data.length-1;
     // 小数点第2位以下を切り捨て(km)
-    distabce = Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10) / 10000
-    console.log(Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10));
-    if(distabce > 0) $(".kmBox").text("走行距離: 約" + distabce + "km");
+    km += Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10) / 10000
+    if(km > 0) $(".kmBox").text("走行距離: 約" + km + "km");
   }
 }
 
