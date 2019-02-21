@@ -87,13 +87,13 @@ function success(position){
 
   if(gps_data.length > 2) {
     makeLine(map);
-
     /*
      * 距離測定
      */
     var last = gps_data.length-1;
     // 小数点第2位以下を切り捨て(km)
     distabce = Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10) / 10000
+    console.log(Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10));
     if(distabce > 0) $(".kmBox").text("走行距離: 約" + distabce + "km");
   }
 }
