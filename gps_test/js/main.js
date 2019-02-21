@@ -94,7 +94,7 @@ function success(position){
     // 小数点第2位以下を切り捨て(km)
     km += hubeny(lat, lng, gps_data[last-1].lat(), gps_data[last-1].lng()) / 1000
     console.log(km+"km");
-    if(km > 0) $(".kmBox").text("走行距離: 約" + Math.floor(km*10)/10 + "km");
+    if(km > 0.09) $(".kmBox").text("走行距離: 約" + Math.floor(km*10)/10 + "km");
   }
 }
 
