@@ -93,7 +93,7 @@ function success(position){
      */
     var last = gps_data.length-1;
     // 小数点第2位以下を切り捨て(km)
-    distabce = Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10) * 10000
+    distabce = Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10) / 10000
 
     $(".kmBox").text("走行距離: 約" + distabce + "km");
   }
