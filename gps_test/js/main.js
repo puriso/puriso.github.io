@@ -19,6 +19,8 @@ $(function(){
   $('.btnBox__btn').on('click',function(){
     if(start === false){
       $('.blackBg').remove();
+      $('.kmBox').show().html('<i class="fa fa-motorcycle faa-vertical animated">');
+      $('.gpsBox').show();
       start = true;
       start_count += 1;
       flashMessage("Start logging!");
@@ -48,6 +50,7 @@ $(function(){
 });
 
 function success(position){
+
   var coords = position.coords;
   var lat = coords.latitude;
   var lng = coords.longitude;
@@ -61,6 +64,13 @@ function success(position){
     streetViewControl: false, //ストリートビュー コントロール
     zoomControl: false, //ズーム コントロール
   };
+
+  // GPS受信アイコン
+  if($(".gpsBox").hasClass("error")){
+    $(".gpsBox").removeClass("error");
+    $(".gpsBox").html('<i class="fas fa-location-arrow faa-pulse animate"></i>');
+  }
+
   if(map === undefined){
     map = new google.maps.Map(document.getElementById('map'), Options);
     console.log("Created google map");
@@ -74,11 +84,18 @@ function success(position){
   gps_data.push(new google.maps.LatLng(lat, lng));
   map.panTo(new google.maps.LatLng(lat, lng));
 
+
   if(gps_data.length > 2) {
     makeLine(map);
+
+    /*
+     * 距離測定
+     */
     var last = gps_data.length-1;
-    //km += Math.abs( Math.abs( gps_data[last-1]) - Math.abs(gps_data[last]) ) / 1000;
-    //$(".kmBox").show().text(km + " km");
+    // 小数点第2位以下を切り捨て(km)
+    distabce = Math.floor(hubeny(lat, lng, gps_data[last].lat(), gps_data[last].lng()) * 10) * 10000
+
+    $(".kmBox").text("走行距離: 約" + distabce + "km");
   }
 }
 
@@ -99,7 +116,7 @@ function makeCenerMarker(map, lat, lng){
       strokeColor: "white",              //枠の色
       strokeWeight: 1.0                 //枠の透過率
     },
-  });
+  })
 }
 
 function makeFlagMarker(map, lat, lng, color="yellow"){
@@ -231,7 +248,7 @@ function error(error){
     2: "位置情報が取得できませんでした。",
     3: "タイムアウトしました。",
   } ;
-  alert( errorMessage[error.code]);
+  $(".gpsBox").html('<i class="fas fa-exclamation-triangle faa-flash animated"></i> ' + errorMessage).addClass("error");
 }
 
 // オプション(省略可)
