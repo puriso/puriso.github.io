@@ -252,7 +252,7 @@ function error(error){
 
 // オプション(省略可)
 var option = {
-  "enableHighAccuracy": false,
+  "enableHighAccuracy": true,
   "timeout": 3500 ,
   "maximumAge": 100 ,
 } ;
